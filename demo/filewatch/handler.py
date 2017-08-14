@@ -1,6 +1,8 @@
 
 import collections
+import gzip
 import sys
+import tarfile
 import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler, FileCreatedEvent
@@ -15,6 +17,14 @@ class MyHandler(FileSystemEventHandler):
     def on_created(self, event):
         if type(event) is FileCreatedEvent:
             self.file_processor.handle(event.src_path)
+
+
+def process(path):
+    with tarfile.open(path) as tar:
+        for member in tar.getmembers():
+            contents = tar.extractfile(member)
+            decompressed = gzip.decompress(contents)
+            return str(decompressed, 'utf-8')
 
 
 def main(watch_folder):
