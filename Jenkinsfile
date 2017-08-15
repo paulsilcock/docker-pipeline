@@ -3,9 +3,12 @@ pipeline {
     stages {
         stage('Unit tests') {
             steps {
-                checkout scm
-                sh '. /data/demo/env/bin/activate && nosetests --exe --with-xunit'
-                archiveArtifacts 'nosetests.xml'
+                sh 'nosetests --exe --with-xunit'
+            }
+            post {
+                always {
+                    junit 'nosetests.xml'
+                }
             }
         }
     }
