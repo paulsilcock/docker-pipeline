@@ -4,9 +4,10 @@ pipeline {
         stage('Unit tests') {
             steps {
                 checkout scm
-                echo 'Hello'
-                //sh '. /data/demo/env/bin/activate && nosetests --with-xunit'
-                archiveArtifacts 'nosetests.xml'
+                dir('docker-pipeline') {
+                    sh '. /data/demo/env/bin/activate && nosetests --exe --with-xunit'
+                    archiveArtifacts 'nosetests.xml'
+                }
             }
         }
     }
