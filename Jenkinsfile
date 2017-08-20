@@ -17,7 +17,7 @@ pipeline {
             }
         }
         stage('Publishing image') {
-            agent { any }
+            agent any
             steps {
                 script {
 
