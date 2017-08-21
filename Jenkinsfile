@@ -8,6 +8,16 @@ pipeline {
             post {
                 always {
                     junit 'nosetests.xml'
+                    script {
+                        step([
+                                $class: 'CoberturaPublisher',
+                                coberturaReportFile: 'coverage.xml',
+                                maxNumberOfBuilds: 0,
+                                onlyStable: false,
+                                sourceEncoding: 'ASCII',
+                                zoomCoverageChart: false
+                        ])
+                    }
                 }
             }
         }
@@ -20,7 +30,11 @@ pipeline {
             agent any
             steps {
                 script {
-
+                    image = docker.build('my/image/demo')
+                    docker.withRegistry('http://localhost:5000') {
+                        image.push("$env.BUILD_NUMBER")
+                        image.push("latest")
+                    }
                 }
             }
         }
